@@ -56,13 +56,14 @@ st.markdown("""
     /* Increase sidebar font sizes */
     [data-testid="stSidebar"] label {
         font-size: 32px !important;
-        font-weight: 500 !important;
+        font-weight: bold !important;
     }
     [data-testid="stSidebar"] input {
         font-size: 16px !important;
     }
     [data-testid="stSidebar"] .stNumberInput label {
         font-size: 32px !important;
+        font-weight: bold !important;
     }
     /* Reduce sidebar spacing */
     [data-testid="stSidebar"] .stNumberInput {
