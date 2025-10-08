@@ -513,23 +513,26 @@ Calculate your own ROI: [Your Streamlit URL]
     
     col1, col2 = st.columns(2)
     with col1:
-        st.text_area("Copy & Share with Your Team:", share_text, height=200, key="share_box")
+        st.text_area("Copy & Share with Your Team:", share_text, height=250, key="share_box")
     with col2:
         st.markdown(f"""
-        ### 📧 Email Report Sent To:
-        **{st.session_state.user_email}**
+        ### 📧 Your Results
+        **Email:** {st.session_state.user_email}
         
-        We've sent a detailed PDF report to your inbox.
+        ### 📋 Next Steps:
         
-        ### 🤝 Next Steps:
-        - Share these results with your CFO/buying committee
-        - Book a 15-minute demo to see Open-AudIT in action
-        - Get a custom implementation plan
+        1. **Copy the results** from the box on the left
+        2. **Share with your CFO** and buying committee
+        3. **Book a demo** to see Open-AudIT in action
+        
+        ### 🤝 Ready to Learn More?
+        
+        See how Open-AudIT can deliver these savings for your organization.
         
         """)
         
-        if st.button("📅 Book a Demo Call", type="primary", use_container_width=True):
-            st.success("Demo request received! We'll contact you at " + st.session_state.user_email)
+        if st.button("📅 Book a 15-Minute Demo", type="primary", use_container_width=True):
+            st.success("✅ Demo request received! We'll contact you at " + st.session_state.user_email)
 
 else:
     # Instructions when calculator hasn't been run
