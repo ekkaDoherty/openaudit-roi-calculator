@@ -277,6 +277,32 @@ if st.sidebar.button("Calculate ROI", type="primary", use_container_width=True):
 # Calculations
 if st.session_state.show_calculations:
     
+    # Lead Capture Gate - Show BEFORE calculations
+    if not st.session_state.email_captured:
+        st.markdown("---")
+        st.markdown("## 🔒 Get Your Personalized ROI Report")
+        st.write("Enter your email to see your results and receive a detailed analysis.")
+        
+        with st.form("email_form"):
+            email_input = st.text_input("Work Email Address", placeholder="you@company.com")
+            submit_email = st.form_submit_button("Show My Results", type="primary", use_container_width=True)
+            
+            if submit_email:
+                if email_input and "@" in email_input and "." in email_input:
+                    st.session_state.email_captured = True
+                    st.session_state.user_email = email_input
+                    st.success(f"✅ Results unlocked for {email_input}")
+                    st.rerun()
+                else:
+                    st.error("Please enter a valid email address")
+        
+        st.markdown("---")
+        st.info("💡 **Why we ask:** We'll send you a detailed PDF report and can connect you with an Open-AudIT specialist.")
+        st.stop()
+    
+    # NOW show results (only after email captured)
+    st.success(f"📊 Results for: {st.session_state.user_email}")
+    
     # Calculate all values first
     warranty_hours_calc = licence_requests * licence_hours * SAVING_PCT_LICENSE
     warranty_dollars_calc = warranty_hours_calc * hourly_rate
@@ -401,14 +427,23 @@ if st.session_state.show_calculations:
     total_dollars = warranty_dollars + licence_spend_savings + asset_dollars + change_dollars + vuln_dollars + report_dollars
     roi_percentage = ((total_dollars - sub_cost) / sub_cost * 100) if sub_cost > 0 else 0
     
-    # Top-level metrics AFTER calculating based on checkboxes
-    metric_col1, metric_col2, metric_col3 = st.columns(3)
+    # Calculate Time-to-Payback (in months)
+    monthly_savings = total_dollars / 12 if total_dollars > 0 else 0
+    payback_months = (sub_cost / monthly_savings) if monthly_savings > 0 else 0
+    
+    # Top-level metrics with TIME-TO-PAYBACK
+    metric_col1, metric_col2, metric_col3, metric_col4 = st.columns(4)
     with metric_col1:
         st.metric("Total Annual Savings", f"${total_dollars:,.0f}", delta="vs current state")
     with metric_col2:
         st.metric("Annual Investment", f"${sub_cost:,.0f}")
     with metric_col3:
         st.metric("ROI", f"{roi_percentage:.0f}%", delta=f"${total_dollars - sub_cost:,.0f} net savings")
+    with metric_col4:
+        if payback_months > 0:
+            st.metric("⚡ Payback Period", f"{payback_months:.1f} months", delta="Break-even time")
+        else:
+            st.metric("⚡ Payback Period", "N/A")
     
     st.divider()
     
@@ -450,8 +485,51 @@ if st.session_state.show_calculations:
         <p><strong>Annual Investment:</strong> ${sub_cost:,}</p>
         <p><strong>Net Savings:</strong> ${total_dollars - sub_cost:,.0f}</p>
         <p><strong>Return on Investment:</strong> {roi_percentage:.0f}%</p>
+        <p><strong>⚡ Payback Period:</strong> {payback_months:.1f} months</p>
     </div>
     """, unsafe_allow_html=True)
+    
+    st.divider()
+    
+    # Share Results Section
+    st.subheader("📤 Share These Results")
+    
+    # Generate shareable summary
+    share_text = f"""Open-AudIT ROI Analysis Results:
+    
+📊 Total Annual Savings: ${total_dollars:,.0f}
+💰 Annual Investment: ${sub_cost:,.0f}
+📈 ROI: {roi_percentage:.0f}%
+⚡ Payback Period: {payback_months:.1f} months
+💼 Net Savings: ${total_dollars - sub_cost:,.0f}
+
+Based on:
+• {num_employees:,} Employees
+• {num_devices:,} IT Devices
+• ${hourly_rate:.2f}/hr IT Staff Rate
+
+Calculate your own ROI: [Your Streamlit URL]
+"""
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        st.text_area("Copy & Share with Your Team:", share_text, height=200, key="share_box")
+    with col2:
+        st.markdown(f"""
+        ### 📧 Email Report Sent To:
+        **{st.session_state.user_email}**
+        
+        We've sent a detailed PDF report to your inbox.
+        
+        ### 🤝 Next Steps:
+        - Share these results with your CFO/buying committee
+        - Book a 15-minute demo to see Open-AudIT in action
+        - Get a custom implementation plan
+        
+        """)
+        
+        if st.button("📅 Book a Demo Call", type="primary", use_container_width=True):
+            st.success("Demo request received! We'll contact you at " + st.session_state.user_email)
 
 else:
     # Instructions when calculator hasn't been run
