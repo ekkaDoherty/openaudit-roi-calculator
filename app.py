@@ -64,6 +64,27 @@ st.markdown("""
     [data-testid="stSidebar"] .stNumberInput label {
         font-size: 16px !important;
     }
+    /* Reduce sidebar spacing */
+    [data-testid="stSidebar"] .stNumberInput {
+        margin-bottom: 0.5rem !important;
+    }
+    [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] {
+        margin-bottom: 0.3rem !important;
+        margin-top: 0.3rem !important;
+    }
+    [data-testid="stSidebar"] hr {
+        margin-top: 0.5rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+    [data-testid="stSidebar"] h2 {
+        margin-top: 0.5rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+    /* Reduce caption spacing */
+    [data-testid="stSidebar"] .stCaption {
+        margin-top: -0.5rem !important;
+        margin-bottom: 0.3rem !important;
+    }
     /* Hero section spacing */
     .hero-section {
         padding: 2rem 0;
