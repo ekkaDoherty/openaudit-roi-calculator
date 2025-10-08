@@ -6,8 +6,6 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
 from reportlab.lib.units import inch
 from reportlab.lib import colors
-from PIL import Image
-import base64
 
 # Page config
 st.set_page_config(
@@ -41,12 +39,6 @@ st.markdown("""
         color: #666;
         margin-bottom: 2rem;
     }
-    .metric-card {
-        background-color: #f0f8ff;
-        padding: 20px;
-        border-radius: 10px;
-        border: 2px solid #1f4788;
-    }
     .savings-total {
         background-color: #4a6fa5;
         padding: 20px;
@@ -66,7 +58,6 @@ st.markdown("""
 # Header with logo
 col1, col2 = st.columns([1, 4])
 with col1:
-    # Placeholder for logo - you'll need to upload firstwave_logo.png to your repo
     try:
         st.image("firstwave_logo.png", width=150)
     except:
@@ -75,11 +66,6 @@ with col1:
 with col2:
     st.markdown('<p class="main-header">Open-AudIT ROI Calculator</p>', unsafe_allow_html=True)
     st.markdown('<p class="sub-header">Calculate your return on investment with Open-AudIT automation</p>', unsafe_allow_html=True)
-
-# Helper function to format numbers with commas
-def format_number_input(value):
-    """Format number with commas for display"""
-    return f"{value:,.0f}"
 
 # Sidebar for inputs
 with st.sidebar:
@@ -113,61 +99,6 @@ with st.sidebar:
     st.caption(f"📍 ${hourly_rate:,.2f}")
     
     st.divider()
-    
-    # Recalculate based on checkboxes
-    # Warranty Requests Response Automation
-    warranty_hours = 0
-    warranty_dollars = 0
-    if chk_warranty:
-        warranty_hours = licence_requests * licence_hours * SAVING_PCT_LICENSE
-        warranty_dollars = warranty_hours * hourly_rate
-    
-    # Enterprise Software Licence Spend Optimisation
-    licence_spend_savings = 0
-    if chk_licence_spend:
-        licence_spend_savings = licence_spend * LICENCE_SPEND_REDUCTION_PCT
-    
-    # Asset Discovery & Inventory
-    asset_hours = 0
-    asset_dollars = 0
-    if chk_asset:
-        asset_hours = ((num_devices * MIN_PER_DEVICE_DISCOVERY / 60.0) + 
-                       (reports_per_year * HOURS_PER_ASSET_REPORT)) * SAVING_PCT_ASSET
-        asset_dollars = asset_hours * hourly_rate
-    
-    # Change Detection & Config Management
-    change_hours = 0
-    change_dollars = 0
-    if chk_change:
-        critical_devices = num_devices * CRITICAL_DEVICE_PCT
-        change_hours = critical_devices * checks_per_year * ((MIN_PER_CHECK_MANUAL - MIN_PER_CHECK_AUTOMATED) / 60.0)
-        change_hours = max(0, change_hours)
-        change_dollars = change_hours * hourly_rate
-    
-    # Vulnerability Identification
-    vuln_hours = 0
-    vuln_dollars = 0
-    if chk_vuln:
-        vuln_hours = num_devices * MIN_PER_DEVICE_VULN_PER_YEAR / 60.0
-        vuln_dollars = vuln_hours * hourly_rate
-    
-    # Report Generation & Distribution
-    report_hours = 0
-    report_dollars = 0
-    if chk_reports:
-        report_hours = reports_per_year * 312  # Based on your G12 formula
-        report_dollars = report_hours * hourly_rate
-    
-    # Recalculate totals based on selected items
-    total_hours = warranty_hours + asset_hours + change_hours + vuln_hours + report_hours
-    total_dollars = warranty_dollars + licence_spend_savings + asset_dollars + change_dollars + vuln_dollars + report_dollars
-    roi_percentage = ((total_dollars - sub_cost) / sub_cost * 100) if sub_cost > 0 else 0
-    
-    # Update the metrics at the top with recalculated values
-    col1.metric("Total Annual Savings", f"${total_dollars:,.0f}", delta="vs current state")
-    col3.metric("ROI", f"{roi_percentage:.0f}%", delta=f"${total_dollars - sub_cost:,.0f} net savings")
-    
-    st.write("")  # Spacing
     st.header("🔧 Current Processes")
     
     licence_requests = st.number_input(
@@ -224,63 +155,57 @@ with st.sidebar:
     )
     st.caption(f"📍 ${sub_cost:,}")
 
-# Initialize session state for checkboxes
+# Initialize session state
 if 'show_calculations' not in st.session_state:
     st.session_state.show_calculations = False
 
-# Calculate button with navy blue theme
+# Calculate button
 if st.sidebar.button("Calculate ROI", type="primary", use_container_width=True):
     st.session_state.show_calculations = True
 
 # Calculations
 if st.session_state.show_calculations:
     
-    # First, calculate all values (will be filtered by checkboxes later)
-    # Warranty Requests Response Automation
+    # Calculate all values first
     warranty_hours_calc = licence_requests * licence_hours * SAVING_PCT_LICENSE
     warranty_dollars_calc = warranty_hours_calc * hourly_rate
     
-    # Enterprise Software Licence Spend Optimisation
     licence_spend_savings_calc = licence_spend * LICENCE_SPEND_REDUCTION_PCT
     
-    # Asset Discovery & Inventory
     asset_hours_calc = ((num_devices * MIN_PER_DEVICE_DISCOVERY / 60.0) + 
                    (reports_per_year * HOURS_PER_ASSET_REPORT)) * SAVING_PCT_ASSET
     asset_dollars_calc = asset_hours_calc * hourly_rate
     
-    # Change Detection & Config Management
     critical_devices = num_devices * CRITICAL_DEVICE_PCT
     change_hours_calc = critical_devices * checks_per_year * ((MIN_PER_CHECK_MANUAL - MIN_PER_CHECK_AUTOMATED) / 60.0)
     change_hours_calc = max(0, change_hours_calc)
     change_dollars_calc = change_hours_calc * hourly_rate
     
-    # Vulnerability Identification
     vuln_hours_calc = num_devices * MIN_PER_DEVICE_VULN_PER_YEAR / 60.0
     vuln_dollars_calc = vuln_hours_calc * hourly_rate
     
-    # Report Generation & Distribution
-    report_hours_calc = reports_per_year * 312  # Based on your G12 formula
+    report_hours_calc = reports_per_year * 312
     report_dollars_calc = report_hours_calc * hourly_rate
     
     # Display Results
     st.header("💡 Your ROI Results")
     
-    # Detailed breakdown
+    # Detailed breakdown with checkboxes
     st.subheader("📋 Detailed Savings Breakdown")
     
     # Checkboxes for inclusion
     st.write("**Select items to include in ROI calculation:**")
-    col1, col2, col3 = st.columns(3)
+    chk_col1, chk_col2, chk_col3 = st.columns(3)
     
-    with col1:
+    with chk_col1:
         chk_warranty = st.checkbox("Warranty Requests Response", value=True, key="chk1")
         chk_licence_spend = st.checkbox("Licence Spend Optimisation", value=True, key="chk2")
     
-    with col2:
+    with chk_col2:
         chk_asset = st.checkbox("Asset Discovery & Inventory", value=True, key="chk3")
         chk_change = st.checkbox("Change Detection & Config Mgmt", value=True, key="chk4")
     
-    with col3:
+    with chk_col3:
         chk_vuln = st.checkbox("Vulnerability Identification", value=True, key="chk5")
         chk_reports = st.checkbox("Report Generation & Distribution", value=True, key="chk6")
     
@@ -297,25 +222,7 @@ if st.session_state.show_calculations:
     vuln_hours = vuln_hours_calc if chk_vuln else 0
     vuln_dollars = vuln_dollars_calc if chk_vuln else 0
     report_hours = report_hours_calc if chk_reports else 0
-    report_dollars = report_dollars_calc if chk_reports else 0:
-        critical_devices = num_devices * CRITICAL_DEVICE_PCT
-        change_hours = critical_devices * checks_per_year * ((MIN_PER_CHECK_MANUAL - MIN_PER_CHECK_AUTOMATED) / 60.0)
-        change_hours = max(0, change_hours)
-        change_dollars = change_hours * hourly_rate
-    
-    # Vulnerability Identification
-    vuln_hours = 0
-    vuln_dollars = 0
-    if chk_vuln:
-        vuln_hours = num_devices * MIN_PER_DEVICE_VULN_PER_YEAR / 60.0
-        vuln_dollars = vuln_hours * hourly_rate
-    
-    # Report Generation & Distribution
-    report_hours = 0
-    report_dollars = 0
-    if chk_reports:
-        report_hours = reports_per_year * 312  # Based on your G12 formula
-        report_dollars = report_hours * hourly_rate
+    report_dollars = report_dollars_calc if chk_reports else 0
     
     # Totals
     total_hours = warranty_hours + asset_hours + change_hours + vuln_hours + report_hours
@@ -323,42 +230,16 @@ if st.session_state.show_calculations:
     
     roi_percentage = ((total_dollars - sub_cost) / sub_cost * 100) if sub_cost > 0 else 0
     
-    # Display Results
-    st.header("💡 Your ROI Results")
-    
     # Top-level metrics
-    col1, col2, col3 = st.columns(3)
-    with col1:
+    metric_col1, metric_col2, metric_col3 = st.columns(3)
+    with metric_col1:
         st.metric("Total Annual Savings", f"${total_dollars:,.0f}", delta="vs current state")
-    with col2:
+    with metric_col2:
         st.metric("Annual Investment", f"${sub_cost:,.0f}")
-    with col3:
+    with metric_col3:
         st.metric("ROI", f"{roi_percentage:.0f}%", delta=f"${total_dollars - sub_cost:,.0f} net savings")
     
     st.divider()
-    
-    # Detailed breakdown
-    st.subheader("📋 Detailed Savings Breakdown")
-    
-    # Checkboxes for inclusion
-    st.write("**Select items to include in ROI calculation:**")
-    col1, col2, col3 = st.columns(3)
-    
-    with col1:
-        chk_warranty = st.checkbox("Warranty Requests Response", value=True, key="chk1")
-        chk_licence_spend = st.checkbox("Licence Spend Optimisation", value=True, key="chk2")
-    
-    with col2:
-        chk_asset = st.checkbox("Asset Discovery & Inventory", value=True, key="chk3")
-        chk_change = st.checkbox("Change Detection & Config Mgmt", value=True, key="chk4")
-    
-    with col3:
-        chk_vuln = st.checkbox("Vulnerability Identification", value=True, key="chk5")
-        chk_reports = st.checkbox("Report Generation & Distribution", value=True, key="chk6")
-    
-    st.divider()
-    
-    # Recalculate based on checkboxes
     
     # Create DataFrame for results
     results_data = {
@@ -427,7 +308,7 @@ if st.session_state.show_calculations:
         )
     
     with col2:
-        # Generate PDF Report - FIXED VERSION
+        # Generate PDF Report
         def create_pdf_report():
             buffer = BytesIO()
             doc = SimpleDocTemplate(buffer, pagesize=letter, rightMargin=72, leftMargin=72, topMargin=72, bottomMargin=18)
@@ -441,7 +322,7 @@ if st.session_state.show_calculations:
                 fontSize=24,
                 textColor=colors.HexColor('#1f4788'),
                 spaceAfter=30,
-                alignment=1  # Center alignment
+                alignment=1
             )
             story.append(Paragraph("Open-AudIT ROI Analysis Report", title_style))
             story.append(Spacer(1, 0.3*inch))
@@ -572,7 +453,9 @@ else:
            
         4. **Click 'Calculate ROI'** to see your results
         
-        5. **Download** your results as CSV or a formatted PDF report
+        5. **Select which automation items to include** using the checkboxes
+        
+        6. **Download** your results as CSV or a formatted PDF report
         
         ### What This Calculator Shows You
         
