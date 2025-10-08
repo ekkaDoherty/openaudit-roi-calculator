@@ -265,6 +265,10 @@ with st.sidebar:
 # Initialize session state
 if 'show_calculations' not in st.session_state:
     st.session_state.show_calculations = False
+if 'email_captured' not in st.session_state:
+    st.session_state.email_captured = False
+if 'user_email' not in st.session_state:
+    st.session_state.user_email = ""
 
 # Calculate button
 if st.sidebar.button("Calculate ROI", type="primary", use_container_width=True):
