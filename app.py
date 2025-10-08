@@ -135,6 +135,7 @@ st.markdown('</div>', unsafe_allow_html=True)
 with st.sidebar:
     st.header("📊 Your IT Environment")
     
+    st.markdown("**Number of Employees**")
     col_input, col_display = st.columns([2, 1])
     with col_input:
         num_employees = st.number_input(
@@ -142,11 +143,13 @@ with st.sidebar:
             min_value=0, 
             value=1000, 
             step=100,
-            format="%d"
+            format="%d",
+            label_visibility="collapsed"
         )
     with col_display:
-        st.markdown(f"<p style='margin-top:28px; font-size:14px; color:#666;'>{num_employees:,}</p>", unsafe_allow_html=True)
+        st.markdown(f"<p style='margin-top:8px; font-size:14px; color:#666;'>{num_employees:,}</p>", unsafe_allow_html=True)
     
+    st.markdown("**Number of IT Devices**")
     col_input, col_display = st.columns([2, 1])
     with col_input:
         num_devices = st.number_input(
@@ -154,88 +157,103 @@ with st.sidebar:
             min_value=0, 
             value=10000, 
             step=1000,
-            format="%d"
+            format="%d",
+            label_visibility="collapsed"
         )
     with col_display:
-        st.markdown(f"<p style='margin-top:28px; font-size:14px; color:#666;'>{num_devices:,}</p>", unsafe_allow_html=True)
+        st.markdown(f"<p style='margin-top:8px; font-size:14px; color:#666;'>{num_devices:,}</p>", unsafe_allow_html=True)
     
+    st.markdown("**Average Hourly Rate of IT Staff ($/hr)**")
     col_input, col_display = st.columns([2, 1])
     with col_input:
         hourly_rate = st.number_input(
-            "Average Hourly Rate of IT Staff ($/hr)", 
+            "Average Hourly Rate of IT Staff", 
             min_value=0.0, 
             value=50.0, 
             step=5.0,
-            format="%.2f"
+            format="%.2f",
+            label_visibility="collapsed"
         )
     with col_display:
-        st.markdown(f"<p style='margin-top:28px; font-size:14px; color:#666;'>${hourly_rate:,.2f}</p>", unsafe_allow_html=True)
+        st.markdown(f"<p style='margin-top:8px; font-size:14px; color:#666;'>${hourly_rate:,.2f}</p>", unsafe_allow_html=True)
     
     st.divider()
     st.header("🔧 Current Processes")
     
+    st.markdown("**Warranty/Licence Requests per Year**")
     col_input, col_display = st.columns([2, 1])
     with col_input:
         licence_requests = st.number_input(
-            "Warranty/Licence Requests per Year", 
+            "Warranty Licence Requests per Year", 
             min_value=0, 
             value=1000, 
             step=50,
-            format="%d"
+            format="%d",
+            label_visibility="collapsed"
         )
     with col_display:
-        st.markdown(f"<p style='margin-top:28px; font-size:14px; color:#666;'>{licence_requests:,}</p>", unsafe_allow_html=True)
+        st.markdown(f"<p style='margin-top:8px; font-size:14px; color:#666;'>{licence_requests:,}</p>", unsafe_allow_html=True)
     
+    st.markdown("**Avg Processing Time per Licence Request (hrs)**")
     licence_hours = st.number_input(
-        "Avg Processing Time per Licence Request (hrs)", 
+        "Avg Processing Time per Licence Request", 
         min_value=0.0, 
         value=0.5, 
         step=0.1,
-        format="%.2f"
+        format="%.2f",
+        label_visibility="collapsed"
     )
     
+    st.markdown("**Total Current Licence Spend ($/yr)**")
     col_input, col_display = st.columns([2, 1])
     with col_input:
         licence_spend = st.number_input(
-            "Total Current Licence Spend ($/yr)", 
+            "Total Current Licence Spend", 
             min_value=0, 
             value=5000000, 
             step=100000,
-            format="%d"
+            format="%d",
+            label_visibility="collapsed"
         )
     with col_display:
-        st.markdown(f"<p style='margin-top:28px; font-size:14px; color:#666;'>${licence_spend:,}</p>", unsafe_allow_html=True)
+        st.markdown(f"<p style='margin-top:8px; font-size:14px; color:#666;'>${licence_spend:,}</p>", unsafe_allow_html=True)
     
+    st.markdown("**Asset & Inventory Reports per Year**")
     reports_per_year = st.number_input(
-        "Asset & Inventory Reports per Year", 
+        "Asset Inventory Reports per Year", 
         min_value=0, 
         value=12, 
         step=1,
-        format="%d"
+        format="%d",
+        label_visibility="collapsed"
     )
     
+    st.markdown("**Change Detection & Config Mgmt Checks per Year**")
     checks_per_year = st.number_input(
-        "Change Detection & Config Mgmt Checks per Year", 
+        "Change Detection Config Mgmt Checks per Year", 
         min_value=0, 
         value=12, 
         step=1,
-        format="%d"
+        format="%d",
+        label_visibility="collapsed"
     )
     
     st.divider()
     st.header("💵 Investment")
     
+    st.markdown("**Open-AudIT Annual Subscription Cost ($)**")
     col_input, col_display = st.columns([2, 1])
     with col_input:
         sub_cost = st.number_input(
-            "Open-AudIT Annual Subscription Cost ($)", 
+            "Open-AudIT Annual Subscription Cost", 
             min_value=0, 
             value=100000, 
             step=10000,
-            format="%d"
+            format="%d",
+            label_visibility="collapsed"
         )
     with col_display:
-        st.markdown(f"<p style='margin-top:28px; font-size:14px; color:#666;'>${sub_cost:,}</p>", unsafe_allow_html=True)
+        st.markdown(f"<p style='margin-top:8px; font-size:14px; color:#666;'>${sub_cost:,}</p>", unsafe_allow_html=True)
 
 # Initialize session state
 if 'show_calculations' not in st.session_state:
