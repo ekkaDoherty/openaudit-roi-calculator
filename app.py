@@ -95,6 +95,14 @@ st.markdown("""
     [data-testid="stSidebar"] > div:first-child {
         padding-top: 1rem !important;
     }
+    /* Green clear button */
+    .stButton button[kind="secondary"] {
+        background-color: #28a745 !important;
+        color: white !important;
+    }
+    .stButton button[kind="secondary"]:hover {
+        background-color: #218838 !important;
+    }
     /* Hero section spacing */
     .hero-section {
         padding: 2rem 0;
