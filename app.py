@@ -55,14 +55,14 @@ st.markdown("""
     }
     /* Increase sidebar font sizes */
     [data-testid="stSidebar"] label {
-        font-size: 16px !important;
+        font-size: 32px !important;
         font-weight: 500 !important;
     }
     [data-testid="stSidebar"] input {
         font-size: 16px !important;
     }
     [data-testid="stSidebar"] .stNumberInput label {
-        font-size: 16px !important;
+        font-size: 32px !important;
     }
     /* Reduce sidebar spacing */
     [data-testid="stSidebar"] .stNumberInput {
@@ -235,18 +235,10 @@ with st.sidebar:
 # Initialize session state
 if 'show_calculations' not in st.session_state:
     st.session_state.show_calculations = False
-if 'clear_inputs' not in st.session_state:
-    st.session_state.clear_inputs = False
 
-# Buttons side by side
-btn_col1, btn_col2 = st.sidebar.columns(2)
-with btn_col1:
-    if st.button("Calculate ROI", type="primary", use_container_width=True):
-        st.session_state.show_calculations = True
-with btn_col2:
-    if st.button("Clear", type="secondary", use_container_width=True):
-        st.session_state.clear_inputs = True
-        st.rerun()
+# Calculate button
+if st.sidebar.button("Calculate ROI", type="primary", use_container_width=True):
+    st.session_state.show_calculations = True
 
 # Calculations
 if st.session_state.show_calculations:
