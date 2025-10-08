@@ -29,13 +29,14 @@ MIN_PER_DEVICE_VULN_PER_YEAR = 10
 st.markdown("""
     <style>
     .main-header {
-        font-size: 7.5rem;
+        font-size: 4rem;
         color: #1f4788;
         font-weight: bold;
-        margin-bottom: 0.5rem;
+        margin-bottom: 1rem;
+        line-height: 1.2;
     }
     .sub-header {
-        font-size: 1.2rem;
+        font-size: 1.5rem;
         color: #666;
         margin-bottom: 2rem;
     }
@@ -63,20 +64,28 @@ st.markdown("""
     [data-testid="stSidebar"] .stNumberInput label {
         font-size: 16px !important;
     }
+    /* Hero section spacing */
+    .hero-section {
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+    }
     </style>
 """, unsafe_allow_html=True)
 
-# Header with logo
-col1, col2 = st.columns([1, 4])
+# Header with logo - HERO SECTION
+st.markdown('<div class="hero-section">', unsafe_allow_html=True)
+col1, col2 = st.columns([1, 3])
 with col1:
     try:
-        st.image("firstwave_logo.png", width=600)
+        st.image("firstwave_logo.png", width=300)
     except:
-        st.markdown("**FirstWave**")
+        st.markdown('<h1 style="font-size: 3rem; color: #1f4788;">FirstWave</h1>', unsafe_allow_html=True)
 
 with col2:
     st.markdown('<p class="main-header">Open-AudIT ROI Calculator</p>', unsafe_allow_html=True)
     st.markdown('<p class="sub-header">Calculate your return on investment with Open-AudIT automation</p>', unsafe_allow_html=True)
+
+st.markdown('</div>', unsafe_allow_html=True)
 
 # Sidebar for inputs
 with st.sidebar:
