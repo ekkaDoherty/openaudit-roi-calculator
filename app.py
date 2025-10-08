@@ -29,7 +29,7 @@ MIN_PER_DEVICE_VULN_PER_YEAR = 10
 st.markdown("""
     <style>
     .main-header {
-        font-size: 2.5rem;
+        font-size: 7.5rem;
         color: #1f4788;
         font-weight: bold;
         margin-bottom: 0.5rem;
@@ -52,6 +52,17 @@ st.markdown("""
     .savings-total p {
         color: white;
     }
+    /* Increase sidebar font sizes */
+    [data-testid="stSidebar"] label {
+        font-size: 16px !important;
+        font-weight: 500 !important;
+    }
+    [data-testid="stSidebar"] input {
+        font-size: 16px !important;
+    }
+    [data-testid="stSidebar"] .stNumberInput label {
+        font-size: 16px !important;
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -59,7 +70,7 @@ st.markdown("""
 col1, col2 = st.columns([1, 4])
 with col1:
     try:
-        st.image("firstwave_logo.png", width=150)
+        st.image("firstwave_logo.png", width=600)
     except:
         st.markdown("**FirstWave**")
 
@@ -190,23 +201,6 @@ if st.session_state.show_calculations:
     # Display Results
     st.header("💡 Your ROI Results")
     
-    # Top-level metrics (calculate with ALL items first for display)
-    total_hours_all = (warranty_hours_calc + asset_hours_calc + change_hours_calc + 
-                       vuln_hours_calc + report_hours_calc)
-    total_dollars_all = (warranty_dollars_calc + licence_spend_savings_calc + asset_dollars_calc + 
-                         change_dollars_calc + vuln_dollars_calc + report_dollars_calc)
-    roi_all = ((total_dollars_all - sub_cost) / sub_cost * 100) if sub_cost > 0 else 0
-    
-    metric_col1, metric_col2, metric_col3 = st.columns(3)
-    with metric_col1:
-        st.metric("Total Annual Savings", f"${total_dollars_all:,.0f}", delta="vs current state")
-    with metric_col2:
-        st.metric("Annual Investment", f"${sub_cost:,.0f}")
-    with metric_col3:
-        st.metric("ROI", f"{roi_all:.0f}%", delta=f"${total_dollars_all - sub_cost:,.0f} net savings")
-    
-    st.divider()
-    
     # Detailed breakdown with checkboxes IN THE TABLE
     st.subheader("📋 Detailed Savings Breakdown")
     
@@ -306,6 +300,17 @@ if st.session_state.show_calculations:
     total_hours = warranty_hours + asset_hours + change_hours + vuln_hours + report_hours
     total_dollars = warranty_dollars + licence_spend_savings + asset_dollars + change_dollars + vuln_dollars + report_dollars
     roi_percentage = ((total_dollars - sub_cost) / sub_cost * 100) if sub_cost > 0 else 0
+    
+    # Top-level metrics AFTER calculating based on checkboxes
+    metric_col1, metric_col2, metric_col3 = st.columns(3)
+    with metric_col1:
+        st.metric("Total Annual Savings", f"${total_dollars:,.0f}", delta="vs current state")
+    with metric_col2:
+        st.metric("Annual Investment", f"${sub_cost:,.0f}")
+    with metric_col3:
+        st.metric("ROI", f"{roi_percentage:.0f}%", delta=f"${total_dollars - sub_cost:,.0f} net savings")
+    
+    st.divider()
     
     # Create DataFrame for CSV/PDF export
     results_data = {
