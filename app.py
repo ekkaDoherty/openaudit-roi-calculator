@@ -227,10 +227,18 @@ with st.sidebar:
 # Initialize session state
 if 'show_calculations' not in st.session_state:
     st.session_state.show_calculations = False
+if 'clear_inputs' not in st.session_state:
+    st.session_state.clear_inputs = False
 
-# Calculate button
-if st.sidebar.button("Calculate ROI", type="primary", use_container_width=True):
-    st.session_state.show_calculations = True
+# Buttons side by side
+btn_col1, btn_col2 = st.sidebar.columns(2)
+with btn_col1:
+    if st.button("Calculate ROI", type="primary", use_container_width=True):
+        st.session_state.show_calculations = True
+with btn_col2:
+    if st.button("Clear", type="secondary", use_container_width=True):
+        st.session_state.clear_inputs = True
+        st.rerun()
 
 # Calculations
 if st.session_state.show_calculations:
@@ -410,147 +418,6 @@ if st.session_state.show_calculations:
         <p><strong>Return on Investment:</strong> {roi_percentage:.0f}%</p>
     </div>
     """, unsafe_allow_html=True)
-    
-    st.divider()
-    
-    # Download section
-    st.subheader("📥 Export Your Results")
-    
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        # CSV Download
-        csv = df.to_csv(index=False)
-        st.download_button(
-            label="Download Results (CSV)",
-            data=csv,
-            file_name="openaudit_roi_results.csv",
-            mime="text/csv",
-            use_container_width=True
-        )
-    
-    with col2:
-        # Generate PDF Report
-        def create_pdf_report():
-            buffer = BytesIO()
-            doc = SimpleDocTemplate(buffer, pagesize=letter, rightMargin=72, leftMargin=72, topMargin=72, bottomMargin=18)
-            story = []
-            styles = getSampleStyleSheet()
-            
-            # Title
-            title_style = ParagraphStyle(
-                'CustomTitle',
-                parent=styles['Heading1'],
-                fontSize=24,
-                textColor=colors.HexColor('#1f4788'),
-                spaceAfter=30,
-                alignment=1
-            )
-            story.append(Paragraph("Open-AudIT ROI Analysis Report", title_style))
-            story.append(Spacer(1, 0.3*inch))
-            
-            # Summary Section
-            summary_style = ParagraphStyle(
-                'Summary',
-                parent=styles['Normal'],
-                fontSize=12,
-                spaceAfter=12
-            )
-            
-            story.append(Paragraph("<b>Executive Summary</b>", styles['Heading2']))
-            story.append(Spacer(1, 0.1*inch))
-            story.append(Paragraph(f"<b>Total Annual Savings:</b> ${total_dollars:,.0f}", summary_style))
-            story.append(Paragraph(f"<b>Total Hours Saved:</b> {total_hours:,.0f} hours/year", summary_style))
-            story.append(Paragraph(f"<b>Annual Investment:</b> ${sub_cost:,.0f}", summary_style))
-            story.append(Paragraph(f"<b>Net Annual Savings:</b> ${total_dollars - sub_cost:,.0f}", summary_style))
-            story.append(Paragraph(f"<b>Return on Investment:</b> {roi_percentage:.0f}%", summary_style))
-            story.append(Spacer(1, 0.4*inch))
-            
-            # Input Parameters
-            story.append(Paragraph("<b>Input Parameters</b>", styles['Heading2']))
-            story.append(Spacer(1, 0.1*inch))
-            
-            input_data = [
-                ['Parameter', 'Value'],
-                ['Number of Employees', f"{num_employees:,}"],
-                ['Number of IT Devices', f"{num_devices:,}"],
-                ['Average IT Staff Hourly Rate', f"${hourly_rate:.2f}"],
-                ['Warranty/Licence Requests per Year', f"{licence_requests:,}"],
-                ['Avg Time per Licence Request', f"{licence_hours:.2f} hours"],
-                ['Total Current Licence Spend', f"${licence_spend:,.0f}"],
-                ['Reports per Year', f"{reports_per_year}"],
-                ['Config Checks per Year', f"{checks_per_year}"],
-            ]
-            
-            input_table = Table(input_data, colWidths=[3.5*inch, 2.5*inch])
-            input_table.setStyle(TableStyle([
-                ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#4a6fa5')),
-                ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-                ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-                ('FONTSIZE', (0, 0), (-1, 0), 11),
-                ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-                ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-                ('GRID', (0, 0), (-1, -1), 1, colors.grey),
-                ('FONTSIZE', (0, 1), (-1, -1), 10),
-            ]))
-            story.append(input_table)
-            story.append(Spacer(1, 0.4*inch))
-            
-            # Detailed Savings Breakdown
-            story.append(Paragraph("<b>Detailed Savings Breakdown</b>", styles['Heading2']))
-            story.append(Spacer(1, 0.1*inch))
-            
-            table_data = [['Automation Item', 'Hours Saved', '$ Saved']]
-            for _, row in df.iterrows():
-                table_data.append([row['Automation Item'], row['Hours Saved'], row['$ Saved']])
-            
-            t = Table(table_data, colWidths=[3*inch, 1.5*inch, 1.5*inch])
-            t.setStyle(TableStyle([
-                ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#4a6fa5')),
-                ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-                ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-                ('ALIGN', (1, 0), (-1, -1), 'RIGHT'),
-                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-                ('FONTSIZE', (0, 0), (-1, 0), 11),
-                ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-                ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-                ('GRID', (0, 0), (-1, -1), 1, colors.grey),
-                ('FONTSIZE', (0, 1), (-1, -1), 10),
-                ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.lightgrey]),
-            ]))
-            story.append(t)
-            story.append(Spacer(1, 0.3*inch))
-            
-            # Footer
-            footer_style = ParagraphStyle(
-                'Footer',
-                parent=styles['Normal'],
-                fontSize=9,
-                textColor=colors.grey,
-                alignment=1
-            )
-            story.append(Spacer(1, 0.5*inch))
-            story.append(Paragraph("Generated by Open-AudIT ROI Calculator", footer_style))
-            story.append(Paragraph("© 2025 FirstWave. All rights reserved.", footer_style))
-            
-            # Build PDF
-            doc.build(story)
-            buffer.seek(0)
-            return buffer
-        
-        try:
-            pdf_buffer = create_pdf_report()
-            st.download_button(
-                label="Download Report (PDF)",
-                data=pdf_buffer,
-                file_name="openaudit_roi_report.pdf",
-                mime="application/pdf",
-                use_container_width=True
-            )
-        except Exception as e:
-            st.error(f"PDF generation error: {str(e)}")
-            st.info("Try downloading CSV instead, or contact support if the issue persists.")
 
 else:
     # Instructions when calculator hasn't been run
