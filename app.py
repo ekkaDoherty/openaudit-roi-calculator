@@ -66,24 +66,34 @@ st.markdown("""
     }
     /* Reduce sidebar spacing */
     [data-testid="stSidebar"] .stNumberInput {
-        margin-bottom: 0.5rem !important;
+        margin-bottom: 0.2rem !important;
+        margin-top: 0 !important;
     }
     [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] {
-        margin-bottom: 0.3rem !important;
-        margin-top: 0.3rem !important;
+        margin-bottom: 0.1rem !important;
+        margin-top: 0.1rem !important;
     }
     [data-testid="stSidebar"] hr {
-        margin-top: 0.5rem !important;
-        margin-bottom: 0.5rem !important;
+        margin-top: 0.3rem !important;
+        margin-bottom: 0.3rem !important;
     }
     [data-testid="stSidebar"] h2 {
-        margin-top: 0.5rem !important;
-        margin-bottom: 0.5rem !important;
+        margin-top: 0.3rem !important;
+        margin-bottom: 0.3rem !important;
+        font-size: 1.1rem !important;
     }
     /* Reduce caption spacing */
     [data-testid="stSidebar"] .stCaption {
-        margin-top: -0.5rem !important;
-        margin-bottom: 0.3rem !important;
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+    }
+    /* Tighter button spacing */
+    [data-testid="stSidebar"] .stButton {
+        margin-top: 0.5rem !important;
+    }
+    /* Reduce overall sidebar padding */
+    [data-testid="stSidebar"] > div:first-child {
+        padding-top: 1rem !important;
     }
     /* Hero section spacing */
     .hero-section {
@@ -112,44 +122,56 @@ st.markdown('</div>', unsafe_allow_html=True)
 with st.sidebar:
     st.header("📊 Your IT Environment")
     
-    num_employees = st.number_input(
-        "Number of Employees", 
-        min_value=0, 
-        value=1000, 
-        step=100,
-        format="%d"
-    )
-    st.caption(f"📍 {num_employees:,}")
+    col_input, col_display = st.columns([2, 1])
+    with col_input:
+        num_employees = st.number_input(
+            "Number of Employees", 
+            min_value=0, 
+            value=1000, 
+            step=100,
+            format="%d"
+        )
+    with col_display:
+        st.markdown(f"<p style='margin-top:28px; font-size:14px; color:#666;'>{num_employees:,}</p>", unsafe_allow_html=True)
     
-    num_devices = st.number_input(
-        "Number of IT Devices", 
-        min_value=0, 
-        value=10000, 
-        step=1000,
-        format="%d"
-    )
-    st.caption(f"📍 {num_devices:,}")
+    col_input, col_display = st.columns([2, 1])
+    with col_input:
+        num_devices = st.number_input(
+            "Number of IT Devices", 
+            min_value=0, 
+            value=10000, 
+            step=1000,
+            format="%d"
+        )
+    with col_display:
+        st.markdown(f"<p style='margin-top:28px; font-size:14px; color:#666;'>{num_devices:,}</p>", unsafe_allow_html=True)
     
-    hourly_rate = st.number_input(
-        "Average Hourly Rate of IT Staff ($/hr)", 
-        min_value=0.0, 
-        value=50.0, 
-        step=5.0,
-        format="%.2f"
-    )
-    st.caption(f"📍 ${hourly_rate:,.2f}")
+    col_input, col_display = st.columns([2, 1])
+    with col_input:
+        hourly_rate = st.number_input(
+            "Average Hourly Rate of IT Staff ($/hr)", 
+            min_value=0.0, 
+            value=50.0, 
+            step=5.0,
+            format="%.2f"
+        )
+    with col_display:
+        st.markdown(f"<p style='margin-top:28px; font-size:14px; color:#666;'>${hourly_rate:,.2f}</p>", unsafe_allow_html=True)
     
     st.divider()
     st.header("🔧 Current Processes")
     
-    licence_requests = st.number_input(
-        "Warranty/Licence Requests per Year", 
-        min_value=0, 
-        value=1000, 
-        step=50,
-        format="%d"
-    )
-    st.caption(f"📍 {licence_requests:,}")
+    col_input, col_display = st.columns([2, 1])
+    with col_input:
+        licence_requests = st.number_input(
+            "Warranty/Licence Requests per Year", 
+            min_value=0, 
+            value=1000, 
+            step=50,
+            format="%d"
+        )
+    with col_display:
+        st.markdown(f"<p style='margin-top:28px; font-size:14px; color:#666;'>{licence_requests:,}</p>", unsafe_allow_html=True)
     
     licence_hours = st.number_input(
         "Avg Processing Time per Licence Request (hrs)", 
@@ -159,14 +181,17 @@ with st.sidebar:
         format="%.2f"
     )
     
-    licence_spend = st.number_input(
-        "Total Current Licence Spend ($/yr)", 
-        min_value=0, 
-        value=5000000, 
-        step=100000,
-        format="%d"
-    )
-    st.caption(f"📍 ${licence_spend:,}")
+    col_input, col_display = st.columns([2, 1])
+    with col_input:
+        licence_spend = st.number_input(
+            "Total Current Licence Spend ($/yr)", 
+            min_value=0, 
+            value=5000000, 
+            step=100000,
+            format="%d"
+        )
+    with col_display:
+        st.markdown(f"<p style='margin-top:28px; font-size:14px; color:#666;'>${licence_spend:,}</p>", unsafe_allow_html=True)
     
     reports_per_year = st.number_input(
         "Asset & Inventory Reports per Year", 
@@ -187,14 +212,17 @@ with st.sidebar:
     st.divider()
     st.header("💵 Investment")
     
-    sub_cost = st.number_input(
-        "Open-AudIT Annual Subscription Cost ($)", 
-        min_value=0, 
-        value=100000, 
-        step=10000,
-        format="%d"
-    )
-    st.caption(f"📍 ${sub_cost:,}")
+    col_input, col_display = st.columns([2, 1])
+    with col_input:
+        sub_cost = st.number_input(
+            "Open-AudIT Annual Subscription Cost ($)", 
+            min_value=0, 
+            value=100000, 
+            step=10000,
+            format="%d"
+        )
+    with col_display:
+        st.markdown(f"<p style='margin-top:28px; font-size:14px; color:#666;'>${sub_cost:,}</p>", unsafe_allow_html=True)
 
 # Initialize session state
 if 'show_calculations' not in st.session_state:
