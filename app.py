@@ -190,28 +190,107 @@ if st.session_state.show_calculations:
     # Display Results
     st.header("💡 Your ROI Results")
     
-    # Detailed breakdown with checkboxes
-    st.subheader("📋 Detailed Savings Breakdown")
+    # Top-level metrics (calculate with ALL items first for display)
+    total_hours_all = (warranty_hours_calc + asset_hours_calc + change_hours_calc + 
+                       vuln_hours_calc + report_hours_calc)
+    total_dollars_all = (warranty_dollars_calc + licence_spend_savings_calc + asset_dollars_calc + 
+                         change_dollars_calc + vuln_dollars_calc + report_dollars_calc)
+    roi_all = ((total_dollars_all - sub_cost) / sub_cost * 100) if sub_cost > 0 else 0
     
-    # Checkboxes for inclusion
-    st.write("**Select items to include in ROI calculation:**")
-    chk_col1, chk_col2, chk_col3 = st.columns(3)
-    
-    with chk_col1:
-        chk_warranty = st.checkbox("Warranty Requests Response", value=True, key="chk1")
-        chk_licence_spend = st.checkbox("Licence Spend Optimisation", value=True, key="chk2")
-    
-    with chk_col2:
-        chk_asset = st.checkbox("Asset Discovery & Inventory", value=True, key="chk3")
-        chk_change = st.checkbox("Change Detection & Config Mgmt", value=True, key="chk4")
-    
-    with chk_col3:
-        chk_vuln = st.checkbox("Vulnerability Identification", value=True, key="chk5")
-        chk_reports = st.checkbox("Report Generation & Distribution", value=True, key="chk6")
+    metric_col1, metric_col2, metric_col3 = st.columns(3)
+    with metric_col1:
+        st.metric("Total Annual Savings", f"${total_dollars_all:,.0f}", delta="vs current state")
+    with metric_col2:
+        st.metric("Annual Investment", f"${sub_cost:,.0f}")
+    with metric_col3:
+        st.metric("ROI", f"{roi_all:.0f}%", delta=f"${total_dollars_all - sub_cost:,.0f} net savings")
     
     st.divider()
     
-    # Apply checkbox filters
+    # Detailed breakdown with checkboxes IN THE TABLE
+    st.subheader("📋 Detailed Savings Breakdown")
+    
+    # Create table with checkboxes
+    table_col1, table_col2, table_col3 = st.columns([1, 3, 2, 2])
+    
+    with table_col1:
+        st.write("**Include**")
+    with table_col2:
+        st.write("**Automation Item**")
+    with table_col3:
+        st.write("**Hours Saved**")
+    with st.columns([1, 3, 2, 2])[3]:
+        st.write("**$ Saved**")
+    
+    # Row 1: Warranty
+    r1_col1, r1_col2, r1_col3, r1_col4 = st.columns([1, 3, 2, 2])
+    with r1_col1:
+        chk_warranty = st.checkbox("", value=True, key="chk1", label_visibility="collapsed")
+    with r1_col2:
+        st.write("Warranty Requests Response Automation")
+    with r1_col3:
+        st.write(f"{warranty_hours_calc if chk_warranty else 0:,.1f}")
+    with r1_col4:
+        st.write(f"${warranty_dollars_calc if chk_warranty else 0:,.0f}")
+    
+    # Row 2: Licence Spend
+    r2_col1, r2_col2, r2_col3, r2_col4 = st.columns([1, 3, 2, 2])
+    with r2_col1:
+        chk_licence_spend = st.checkbox("", value=True, key="chk2", label_visibility="collapsed")
+    with r2_col2:
+        st.write("Enterprise Software Licence Spend Optimisation")
+    with r2_col3:
+        st.write("-")
+    with r2_col4:
+        st.write(f"${licence_spend_savings_calc if chk_licence_spend else 0:,.0f}")
+    
+    # Row 3: Asset
+    r3_col1, r3_col2, r3_col3, r3_col4 = st.columns([1, 3, 2, 2])
+    with r3_col1:
+        chk_asset = st.checkbox("", value=True, key="chk3", label_visibility="collapsed")
+    with r3_col2:
+        st.write("Asset Discovery & Inventory")
+    with r3_col3:
+        st.write(f"{asset_hours_calc if chk_asset else 0:,.1f}")
+    with r3_col4:
+        st.write(f"${asset_dollars_calc if chk_asset else 0:,.0f}")
+    
+    # Row 4: Change
+    r4_col1, r4_col2, r4_col3, r4_col4 = st.columns([1, 3, 2, 2])
+    with r4_col1:
+        chk_change = st.checkbox("", value=True, key="chk4", label_visibility="collapsed")
+    with r4_col2:
+        st.write("Change Detection & Config Management")
+    with r4_col3:
+        st.write(f"{change_hours_calc if chk_change else 0:,.1f}")
+    with r4_col4:
+        st.write(f"${change_dollars_calc if chk_change else 0:,.0f}")
+    
+    # Row 5: Vuln
+    r5_col1, r5_col2, r5_col3, r5_col4 = st.columns([1, 3, 2, 2])
+    with r5_col1:
+        chk_vuln = st.checkbox("", value=True, key="chk5", label_visibility="collapsed")
+    with r5_col2:
+        st.write("Vulnerability Identification")
+    with r5_col3:
+        st.write(f"{vuln_hours_calc if chk_vuln else 0:,.1f}")
+    with r5_col4:
+        st.write(f"${vuln_dollars_calc if chk_vuln else 0:,.0f}")
+    
+    # Row 6: Reports
+    r6_col1, r6_col2, r6_col3, r6_col4 = st.columns([1, 3, 2, 2])
+    with r6_col1:
+        chk_reports = st.checkbox("", value=True, key="chk6", label_visibility="collapsed")
+    with r6_col2:
+        st.write("Report Generation & Distribution")
+    with r6_col3:
+        st.write(f"{report_hours_calc if chk_reports else 0:,.1f}")
+    with r6_col4:
+        st.write(f"${report_dollars_calc if chk_reports else 0:,.0f}")
+    
+    st.divider()
+    
+    # Calculate totals based on checked items
     warranty_hours = warranty_hours_calc if chk_warranty else 0
     warranty_dollars = warranty_dollars_calc if chk_warranty else 0
     licence_spend_savings = licence_spend_savings_calc if chk_licence_spend else 0
@@ -224,24 +303,11 @@ if st.session_state.show_calculations:
     report_hours = report_hours_calc if chk_reports else 0
     report_dollars = report_dollars_calc if chk_reports else 0
     
-    # Totals
     total_hours = warranty_hours + asset_hours + change_hours + vuln_hours + report_hours
     total_dollars = warranty_dollars + licence_spend_savings + asset_dollars + change_dollars + vuln_dollars + report_dollars
-    
     roi_percentage = ((total_dollars - sub_cost) / sub_cost * 100) if sub_cost > 0 else 0
     
-    # Top-level metrics
-    metric_col1, metric_col2, metric_col3 = st.columns(3)
-    with metric_col1:
-        st.metric("Total Annual Savings", f"${total_dollars:,.0f}", delta="vs current state")
-    with metric_col2:
-        st.metric("Annual Investment", f"${sub_cost:,.0f}")
-    with metric_col3:
-        st.metric("ROI", f"{roi_percentage:.0f}%", delta=f"${total_dollars - sub_cost:,.0f} net savings")
-    
-    st.divider()
-    
-    # Create DataFrame for results
+    # Create DataFrame for CSV/PDF export
     results_data = {
         'Automation Item': [
             'Warranty Requests Response Automation',
@@ -270,13 +336,6 @@ if st.session_state.show_calculations:
     }
     
     df = pd.DataFrame(results_data)
-    
-    # Display as formatted table
-    st.dataframe(
-        df,
-        use_container_width=True,
-        hide_index=True
-    )
     
     # Summary box with navy blue background
     st.markdown(f"""
