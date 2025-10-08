@@ -55,15 +55,19 @@ st.markdown("""
     }
     /* Increase sidebar font sizes */
     [data-testid="stSidebar"] label {
-        font-size: 32px !important;
-        font-weight: bold !important;
+        font-size: 18px !important;
+        font-weight: 700 !important;
     }
     [data-testid="stSidebar"] input {
         font-size: 16px !important;
     }
     [data-testid="stSidebar"] .stNumberInput label {
-        font-size: 32px !important;
-        font-weight: bold !important;
+        font-size: 18px !important;
+        font-weight: 700 !important;
+    }
+    [data-testid="stSidebar"] div[data-baseweb="input"] label {
+        font-weight: 700 !important;
+        font-size: 18px !important;
     }
     /* Reduce sidebar spacing */
     [data-testid="stSidebar"] .stNumberInput {
