@@ -71,20 +71,20 @@ st.markdown("""
     }
     /* Reduce sidebar spacing */
     [data-testid="stSidebar"] .stNumberInput {
-        margin-bottom: 0.2rem !important;
-        margin-top: 0 !important;
+        margin-bottom: 0rem !important;
+        margin-top: 0rem !important;
     }
     [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] {
-        margin-bottom: 0.1rem !important;
-        margin-top: 0.1rem !important;
+        margin-bottom: 0.05rem !important;
+        margin-top: 0.05rem !important;
     }
     [data-testid="stSidebar"] hr {
-        margin-top: 0.3rem !important;
-        margin-bottom: 0.3rem !important;
+        margin-top: 0.2rem !important;
+        margin-bottom: 0.2rem !important;
     }
     [data-testid="stSidebar"] h2 {
-        margin-top: 0.3rem !important;
-        margin-bottom: 0.3rem !important;
+        margin-top: 0.2rem !important;
+        margin-bottom: 0.2rem !important;
         font-size: 1.1rem !important;
     }
     /* Reduce caption spacing */
@@ -94,11 +94,18 @@ st.markdown("""
     }
     /* Tighter button spacing */
     [data-testid="stSidebar"] .stButton {
-        margin-top: 0.5rem !important;
+        margin-top: 0.3rem !important;
     }
     /* Reduce overall sidebar padding */
     [data-testid="stSidebar"] > div:first-child {
-        padding-top: 1rem !important;
+        padding-top: 0.5rem !important;
+    }
+    /* Make all input boxes same width */
+    [data-testid="stSidebar"] input[type="number"] {
+        width: 100% !important;
+    }
+    [data-testid="stSidebar"] div[data-baseweb="input"] {
+        width: 100% !important;
     }
     /* Green clear button */
     .stButton button[kind="secondary"] {
