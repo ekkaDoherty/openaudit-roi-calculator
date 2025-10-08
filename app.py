@@ -211,7 +211,7 @@ if st.session_state.show_calculations:
     st.subheader("📋 Detailed Savings Breakdown")
     
     # Create table with checkboxes
-    table_col1, table_col2, table_col3 = st.columns([1, 3, 2, 2])
+    table_col1, table_col2, table_col3, table_col4 = st.columns([1, 3, 2, 2])
     
     with table_col1:
         st.write("**Include**")
@@ -219,7 +219,7 @@ if st.session_state.show_calculations:
         st.write("**Automation Item**")
     with table_col3:
         st.write("**Hours Saved**")
-    with st.columns([1, 3, 2, 2])[3]:
+    with table_col4:
         st.write("**$ Saved**")
     
     # Row 1: Warranty
