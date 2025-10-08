@@ -235,30 +235,69 @@ if st.sidebar.button("Calculate ROI", type="primary", use_container_width=True):
 # Calculations
 if st.session_state.show_calculations:
     
+    # First, calculate all values (will be filtered by checkboxes later)
     # Warranty Requests Response Automation
-    warranty_hours = 0
-    warranty_dollars = 0
-    if chk_warranty:
-        warranty_hours = licence_requests * licence_hours * SAVING_PCT_LICENSE
-        warranty_dollars = warranty_hours * hourly_rate
+    warranty_hours_calc = licence_requests * licence_hours * SAVING_PCT_LICENSE
+    warranty_dollars_calc = warranty_hours_calc * hourly_rate
     
     # Enterprise Software Licence Spend Optimisation
-    licence_spend_savings = 0
-    if chk_licence_spend:
-        licence_spend_savings = licence_spend * LICENCE_SPEND_REDUCTION_PCT
+    licence_spend_savings_calc = licence_spend * LICENCE_SPEND_REDUCTION_PCT
     
     # Asset Discovery & Inventory
-    asset_hours = 0
-    asset_dollars = 0
-    if chk_asset:
-        asset_hours = ((num_devices * MIN_PER_DEVICE_DISCOVERY / 60.0) + 
-                       (reports_per_year * HOURS_PER_ASSET_REPORT)) * SAVING_PCT_ASSET
-        asset_dollars = asset_hours * hourly_rate
+    asset_hours_calc = ((num_devices * MIN_PER_DEVICE_DISCOVERY / 60.0) + 
+                   (reports_per_year * HOURS_PER_ASSET_REPORT)) * SAVING_PCT_ASSET
+    asset_dollars_calc = asset_hours_calc * hourly_rate
     
     # Change Detection & Config Management
-    change_hours = 0
-    change_dollars = 0
-    if chk_change:
+    critical_devices = num_devices * CRITICAL_DEVICE_PCT
+    change_hours_calc = critical_devices * checks_per_year * ((MIN_PER_CHECK_MANUAL - MIN_PER_CHECK_AUTOMATED) / 60.0)
+    change_hours_calc = max(0, change_hours_calc)
+    change_dollars_calc = change_hours_calc * hourly_rate
+    
+    # Vulnerability Identification
+    vuln_hours_calc = num_devices * MIN_PER_DEVICE_VULN_PER_YEAR / 60.0
+    vuln_dollars_calc = vuln_hours_calc * hourly_rate
+    
+    # Report Generation & Distribution
+    report_hours_calc = reports_per_year * 312  # Based on your G12 formula
+    report_dollars_calc = report_hours_calc * hourly_rate
+    
+    # Display Results
+    st.header("💡 Your ROI Results")
+    
+    # Detailed breakdown
+    st.subheader("📋 Detailed Savings Breakdown")
+    
+    # Checkboxes for inclusion
+    st.write("**Select items to include in ROI calculation:**")
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        chk_warranty = st.checkbox("Warranty Requests Response", value=True, key="chk1")
+        chk_licence_spend = st.checkbox("Licence Spend Optimisation", value=True, key="chk2")
+    
+    with col2:
+        chk_asset = st.checkbox("Asset Discovery & Inventory", value=True, key="chk3")
+        chk_change = st.checkbox("Change Detection & Config Mgmt", value=True, key="chk4")
+    
+    with col3:
+        chk_vuln = st.checkbox("Vulnerability Identification", value=True, key="chk5")
+        chk_reports = st.checkbox("Report Generation & Distribution", value=True, key="chk6")
+    
+    st.divider()
+    
+    # Apply checkbox filters
+    warranty_hours = warranty_hours_calc if chk_warranty else 0
+    warranty_dollars = warranty_dollars_calc if chk_warranty else 0
+    licence_spend_savings = licence_spend_savings_calc if chk_licence_spend else 0
+    asset_hours = asset_hours_calc if chk_asset else 0
+    asset_dollars = asset_dollars_calc if chk_asset else 0
+    change_hours = change_hours_calc if chk_change else 0
+    change_dollars = change_dollars_calc if chk_change else 0
+    vuln_hours = vuln_hours_calc if chk_vuln else 0
+    vuln_dollars = vuln_dollars_calc if chk_vuln else 0
+    report_hours = report_hours_calc if chk_reports else 0
+    report_dollars = report_dollars_calc if chk_reports else 0:
         critical_devices = num_devices * CRITICAL_DEVICE_PCT
         change_hours = critical_devices * checks_per_year * ((MIN_PER_CHECK_MANUAL - MIN_PER_CHECK_AUTOMATED) / 60.0)
         change_hours = max(0, change_hours)
